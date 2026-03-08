@@ -1,0 +1,277 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700;800&family=Sora:wght@600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 220 20% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 20% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 15%;
+
+    --primary: 197 62% 62%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 20% 15%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 210 20% 96%;
+    --muted-foreground: 215 16% 47%;
+
+    --accent: 197 62% 62%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 197 62% 62%;
+
+    --radius: 0.5rem;
+
+    --top-bar: 197 62% 62%;
+    --top-bar-foreground: 0 0% 100%;
+
+    --hero-overlay: 220 20% 10%;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 220 20% 8%;
+    --foreground: 210 40% 98%;
+    --card: 220 20% 10%;
+    --card-foreground: 210 40% 98%;
+    --popover: 220 20% 10%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 197 62% 62%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 217 33% 17%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217 33% 17%;
+    --input: 217 33% 17%;
+    --ring: 212 27% 84%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+    font-family: 'Poppins', sans-serif;
+    overflow-x: hidden;
+  }
+}
+
+html {
+  overflow-x: hidden;
+}
+
+/* Tablet/iPad-only layout for Live Auction cards */
+  /* Section heading styles (all h2s except hero) */
+  .section-heading {
+    @apply font-semibold text-center w-full max-w-[740px] mx-auto;
+    font-family: 'Sora', sans-serif;
+    font-size: 48px;
+    line-height: 120%;
+    letter-spacing: 0;
+    opacity: 1;
+  }
+  @media (max-width: 767px) {
+    .section-heading {
+      font-size: 32px; /* scale down on mobile */
+      line-height: 120%;
+    }
+  }
+  @media (min-width: 1024px) {
+    .section-heading {
+      white-space: nowrap;
+      overflow: visible;
+      text-overflow: clip;
+      max-width: none;
+    }
+  }@media (min-width: 768px) and (max-width: 1199px) {
+  .tablet-live-auctions-container {
+    max-width: 1120px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .ipad-property-card {
+    width: 364px;
+    min-width: 364px;
+    height: 523px;
+    border-radius: 16px;
+    opacity: 1;
+  }
+
+  /* Make Live Auction cards move right-to-left like a train on iPad */
+  .ipad-marquee {
+    animation: marquee 12s linear infinite;
+  }
+}
+
+/* Hover only on laptop/desktop for the three Live Auction cards */
+@media (min-width: 1024px) {
+  .live-auction-card {
+    transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+  }
+
+  .live-auction-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 40px rgba(15, 23, 42, 0.14);
+    border-color: hsl(var(--muted-foreground) / 0.35);
+  }
+}
+
+/* Rotate nav icons on click */
+.live-auctions-nav-button svg {
+  transition: transform 180ms ease;
+}
+
+.live-auctions-nav-button:active svg {
+  transform: rotate(90deg);
+}
+
+@media (min-width: 1280px) {
+  .live-auctions-rotating .live-auction-card {
+    animation-duration: 220ms;
+    animation-timing-function: ease;
+    animation-fill-mode: both;
+  }
+
+  .live-auctions-rotating-next .live-auction-card {
+    animation-name: live-auctions-swap-next;
+  }
+
+  .live-auctions-rotating-prev .live-auction-card {
+    animation-name: live-auctions-swap-prev;
+  }
+
+  @keyframes live-auctions-swap-next {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-36px);
+    }
+  }
+
+  @keyframes live-auctions-swap-prev {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(36px);
+    }
+  }
+}
+
+/* How It Works line travel + number highlight */
+.how-it-works-step {
+  --step-delay: 0s;
+}
+
+.how-it-works-line {
+  position: relative;
+  overflow: hidden;
+}
+
+.how-it-works-line::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1px;
+  height: 0%;
+  background: rgba(255, 255, 255, 0.95);
+  animation: how-it-works-line 2.4s ease forwards;
+  animation-delay: calc(var(--step-delay) + 0.25s);
+}
+
+.how-it-works-num {
+  animation: how-it-works-num 2.4s ease forwards;
+  animation-delay: var(--step-delay);
+}
+
+.how-it-works-num-circle {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+@media (min-width: 768px) {
+  .how-it-works-num-circle {
+    width: 38px;
+    height: 38px;
+  }
+}
+
+@keyframes how-it-works-line {
+  0% {
+    height: 0%;
+    opacity: 0.6;
+  }
+  100% {
+    height: 100%;
+    opacity: 1;
+  }
+}
+
+@keyframes how-it-works-num {
+  0% {
+    transform: scale(1);
+    color: rgba(255, 255, 255, 0.55);
+  }
+  50% {
+    transform: scale(1.08);
+    color: rgba(255, 255, 255, 1);
+  }
+  100% {
+    transform: scale(1);
+    color: rgba(255, 255, 255, 0.9);
+  }
+}
