@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700;800&family=Sora:wght@600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700;800&family=Sora:wght@600;700&family=Urbanist:wght@600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -108,17 +108,36 @@ html {
 /* Tablet/iPad-only layout for Live Auction cards */
   /* Section heading styles (all h2s except hero) */
   .section-heading {
-    @apply font-semibold text-center w-full max-w-[740px] mx-auto;
+    @apply font-semibold;
     font-family: 'Sora', sans-serif;
     font-size: 48px;
     line-height: 120%;
     letter-spacing: 0;
     opacity: 1;
+    text-align: center;
+    max-width: 754px;
+    width: 100%;
+    margin: 0 auto;
+    height: auto;
   }
-  @media (max-width: 767px) {
+  @media (min-width: 1024px) {
     .section-heading {
-      font-size: 32px; /* scale down on mobile */
+      width: 754px;
+      height: 58px;
+      font-weight: 600;
+    }
+  }
+  @media (max-width: 640px) {
+    .section-heading {
+      font-size: 30px;
       line-height: 120%;
+      max-width: 320px;
+    }
+  }
+  @media (max-width: 420px) {
+    .section-heading {
+      font-size: 26px;
+      max-width: 280px;
     }
   }
   @media (min-width: 1024px) {
@@ -126,9 +145,24 @@ html {
       white-space: nowrap;
       overflow: visible;
       text-overflow: clip;
-      max-width: none;
     }
-  }@media (min-width: 768px) and (max-width: 1199px) {
+  }
+
+  /* Hero heading styles for laptop and PC */
+  @media (min-width: 1024px) {
+    .hero-heading {
+      width: 889px;
+      height: 124px;
+      transform: rotate(0deg);
+      opacity: 1;
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 52px;
+      line-height: 120%;
+      letter-spacing: 0%;
+    }
+  }
+  @media (min-width: 768px) and (max-width: 1199px) {
   .tablet-live-auctions-container {
     max-width: 1120px;
     margin-left: auto;
@@ -145,7 +179,7 @@ html {
 
   /* Make Live Auction cards move right-to-left like a train on iPad */
   .ipad-marquee {
-    animation: marquee 12s linear infinite;
+    animation: marquee 4s linear infinite;
   }
 }
 

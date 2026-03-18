@@ -10,7 +10,7 @@ const cards = [
 const WhyInvest = () => (
   <section className="py-12 sm:py-16 md:py-20 bg-background">
     <div className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-10 xl:px-[150px]">
-      <h2 className="section-heading text-foreground">
+      <h2 className="section-heading text-foreground text-center">
         Why Invest in Auction Properties
       </h2>
       <p className="text-muted-foreground text-center mt-3 sm:mt-4 max-w-[750px] mx-auto text-[14px] sm:text-[15px] leading-relaxed">

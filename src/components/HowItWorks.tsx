@@ -22,19 +22,31 @@ const HowItWorks = () => (
             Simple step-by-step process to help you participate confidently and secure verified auction properties without complications.
           </p>
         </div>
-        <img src={btnGetGuidance} alt="Get Auction Guidance" className="hidden lg:block h-12 cursor-pointer hover:opacity-90 transition-opacity" />
+        <img
+          src={btnGetGuidance}
+          alt="Get Auction Guidance"
+          className="hidden lg:block h-12 cursor-pointer hover:opacity-90 transition-opacity"
+          loading="lazy"
+          decoding="async"
+        />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
         {/* Left - Image with checklist */}
         <div className="relative">
-          <img src={auctionGuide} alt="Auction guidance" className="w-full max-w-[500px] rounded-2xl object-cover" />
+          <img
+            src={auctionGuide}
+            alt="Auction guidance"
+            className="w-full max-w-[500px] rounded-2xl object-cover"
+            loading="lazy"
+            decoding="async"
+          />
           <div className="howitworks-checklist absolute -bottom-10 right-0 md:-right-6 bg-primary-foreground rounded-xl p-4 md:p-5 shadow-lg w-[220px] md:w-[270px]">
             <h4 className="font-bold text-foreground text-base mb-3">Auction Checklist</h4>
             <div className="space-y-2.5">
               {["Verify legal title", "Review reserve price", "Check auction date"].map((item) => (
                 <div key={item} className="flex items-center gap-2.5">
-                  <img src={checkIcon} alt="" className="w-5 h-5" />
+                  <img src={checkIcon} alt="" className="w-5 h-5" loading="lazy" decoding="async" />
                   <span className="text-foreground text-sm">{item}</span>
                 </div>
               ))}

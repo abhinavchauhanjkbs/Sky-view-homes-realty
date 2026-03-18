@@ -35,7 +35,7 @@ const TestimonialCard = ({ t, hoveredIndex, i, setHoveredIndex }: { t: typeof te
     </div>
     <p className="text-muted-foreground text-[15px] leading-relaxed mb-8">{t.text}</p>
     <div className="flex items-center gap-3">
-      <img src={avatarImg} alt={t.name} className="w-12 h-12 rounded-full object-cover" />
+      <img src={avatarImg} alt={t.name} className="w-12 h-12 rounded-full object-cover" loading="lazy" decoding="async" />
       <div>
         <p className="font-semibold text-foreground text-[15px]">{t.name}</p>
         <p className="text-muted-foreground text-sm">{t.location}</p>
@@ -51,12 +51,17 @@ const Testimonials = () => {
     <section className="py-12 sm:py-16 md:py-20 bg-background">
       {/* remove horizontal padding so cards span full viewport */}
       <div className="max-w-7xl mx-auto px-0">
-        <h2 className="section-heading text-foreground mb-3">
-          Trusted by Smart Auction Investors
-        </h2>
-        <p className="text-center text-muted-foreground max-w-2xl mx-auto mb-14 text-[15px]">
-          Real success stories from buyers who secured verified auction properties with confidence and profitable investment outcomes.
-        </p>
+        <div className="w-[100vw] relative left-1/2 -translate-x-1/2">
+          <h2
+            className="text-[32px] md:text-[48px] leading-[120%] font-semibold text-[#000000] mb-3 text-center max-w-[866px] md:w-[866px] md:h-[58px] mx-auto"
+            style={{ fontFamily: "Sora, sans-serif" }}
+          >
+            Trusted by Smart Auction Investors
+          </h2>
+          <p className="text-center text-muted-foreground max-w-2xl mx-auto mb-14 text-[15px]">
+            Real success stories from buyers who secured verified auction properties with confidence and profitable investment outcomes.
+          </p>
+        </div>
 
         <div className="relative flex items-center justify-center gap-4 sm:gap-6">
           {/* Auto marquee (all devices, keep desktop layout width) */}

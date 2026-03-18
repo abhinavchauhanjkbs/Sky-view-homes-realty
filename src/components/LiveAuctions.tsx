@@ -8,9 +8,15 @@ const properties = [
 ];
 
 const PropertyCard = ({ p }: { p: typeof properties[0] }) => (
-  <div className="live-auction-card ipad-property-card rounded-2xl bg-background border border-border shadow-sm overflow-hidden min-w-[300px] w-[300px] sm:min-w-[340px] sm:w-[340px] md:min-w-[364px] md:w-[364px] md:h-[523px] md:rounded-[16px] xl:min-w-[364px] xl:w-[364px] shrink-0">
+  <div className="live-auction-card ipad-property-card rounded-2xl bg-background border border-border shadow-sm overflow-hidden min-w-[260px] w-[260px] sm:min-w-[340px] sm:w-[340px] md:min-w-[364px] md:w-[364px] md:h-[523px] md:rounded-[16px] xl:min-w-[364px] xl:w-[364px] shrink-0">
     <div className="relative">
-      <img src={propertyImg} alt={p.title} className="w-full h-[260px] object-cover" />
+      <img
+        src={propertyImg}
+        alt={p.title}
+        className="w-full h-[220px] sm:h-[260px] object-cover"
+        loading="lazy"
+        decoding="async"
+      />
       <span className="absolute top-4 left-0 bg-[#01010166] text-primary-foreground pl-4 pr-4 py-1.5 rounded-r-full text-sm font-medium">
         Legal Verified
       </span>
@@ -18,7 +24,7 @@ const PropertyCard = ({ p }: { p: typeof properties[0] }) => (
     <div className="p-5">
       <div className="flex items-center gap-1.5 text-muted-foreground text-sm">
         <MapPin className="w-4 h-4 text-primary" />
-        <span>{p.location}</span>
+        <span className="whitespace-nowrap">{p.location}</span>
         <span className="mx-1">|</span>
         <span>{p.bank}</span>
       </div>
@@ -27,9 +33,9 @@ const PropertyCard = ({ p }: { p: typeof properties[0] }) => (
       <div className="border-t border-border mt-4 pt-4 flex items-center justify-between">
         <div>
           <span className="text-muted-foreground text-xs">Reserved Price</span>
-          <p className="text-muted-foreground font-bold text-xl">{p.price}</p>
+          <p className="text-[#57B6E0] font-bold text-xl">{p.price}</p>
         </div>
-        <button className="flex items-center gap-1 text-muted-foreground font-semibold text-sm hover:underline">
+        <button className="flex items-center gap-1 text-black font-semibold text-sm hover:underline">
           View Details <ArrowUpRight className="w-4 h-4" />
         </button>
       </div>
@@ -37,12 +43,15 @@ const PropertyCard = ({ p }: { p: typeof properties[0] }) => (
   </div>
 );
 
-const LiveAuctions = () => (
+const LiveAuctions = ({ title = "Live Auction Opportunities" }: { title?: string }) => (
   <section className="py-12 sm:py-16 md:py-20 bg-background">
     {/* remove horizontal padding to align cards to viewport edges */}
     <div className="max-w-[1400px] mx-auto px-0 tablet-live-auctions-container">
-        <h2 className="section-heading text-foreground">
-          Live Auction Opportunities
+        <h2
+          className="text-[32px] md:text-[48px] leading-[120%] font-semibold text-[#000000] text-center max-w-[754px] md:w-[754px] md:h-[58px] mx-auto"
+          style={{ fontFamily: "Sora, sans-serif" }}
+        >
+          {title}
         </h2>
         <p className="text-muted-foreground text-center mt-3 sm:mt-4 max-w-[700px] mx-auto text-[14px] sm:text-[15px] leading-relaxed">
           Explore verified bank auction properties with reserve prices, prime locations, and upcoming bidding schedules across major cities.
