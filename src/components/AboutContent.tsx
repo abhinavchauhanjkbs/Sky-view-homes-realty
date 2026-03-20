@@ -1,11 +1,13 @@
+import { Link } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
 import aboutImg from "@/assets/about img.png";
 import exploreBtn from "@/assets/explore button.png";
 import avatarRow from "@/assets/avater.png";
-import investors1 from "@/assets/investors-about1.png";
+import investors1 from "@/assets/investors-about1.jpg";
 import investors2 from "@/assets/investors-about2.png";
 import investors3 from "@/assets/investors-about3.png";
 import missionImg from "@/assets/mission.png";
-import visionImg from "@/assets/vision.png";
+import visionImg from "@/assets/vision.avif";
 import aboutWhy from "@/assets/about-why.png";
 import iconTrusted from "@/assets/Traced Image.png";
 import iconTransparent from "@/assets/Traced Image (1).png";
@@ -15,7 +17,64 @@ import featListings from "@/assets/Vector (1).png";
 import featDocs from "@/assets/Vector (2).png";
 import featReturns from "@/assets/Vector (3).png";
 
-const AboutContent = () => (
+const stats = [
+  { value: 500, label: "Auction Properties" },
+  { value: 20, label: "Partner Banks" },
+  { value: 15, label: "Cities Covered" },
+  { value: 5000, label: "Investors" },
+];
+
+const AboutContent = () => {
+  const [counts, setCounts] = useState(stats.map(() => 0));
+  const hasAnimatedRef = useRef(false);
+  const statsSectionRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const target = statsSectionRef.current;
+    if (!target) return;
+
+    const prefersReducedMotion =
+      window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+    if (prefersReducedMotion) {
+      setCounts(stats.map((s) => s.value));
+      hasAnimatedRef.current = true;
+      return;
+    }
+
+    let start: number | null = null;
+    const duration = 1200;
+    let frameId = 0;
+
+    const animate = (timestamp: number) => {
+      if (start === null) start = timestamp;
+      const progress = Math.min((timestamp - start) / duration, 1);
+      setCounts(stats.map((stat) => Math.floor(progress * stat.value)));
+      if (progress < 1) frameId = window.requestAnimationFrame(animate);
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry.isIntersecting && !hasAnimatedRef.current) {
+          hasAnimatedRef.current = true;
+          frameId = window.requestAnimationFrame(animate);
+        }
+      },
+      { threshold: 0.35 }
+    );
+
+    observer.observe(target);
+
+    return () => {
+      observer.disconnect();
+      window.cancelAnimationFrame(frameId);
+    };
+  }, []);
+
+  const formatCount = (n: number) => new Intl.NumberFormat("en-IN").format(n);
+
+  return (
   <>
     <section className="bg-white text-foreground py-14 sm:py-16">
       <div className="relative max-w-[1400px] mx-auto px-4 sm:px-6 md:px-10 lg:px-[100px]">
@@ -64,32 +123,38 @@ const AboutContent = () => (
               transparency, and structured bidding opportunities. We focus on building trust and helping users identify
               high-value properties at competitive reserve prices.
             </p>
-            <img
-              src={exploreBtn}
-              alt="Explore Auction Properties"
-              className="mt-6 h-11 sm:h-12 w-auto cursor-pointer"
-              loading="lazy"
-              decoding="async"
-            />
+            <a href="/contact#contact-form" aria-label="Go to contact form">
+            <Link to="/auction-properties#available-auctions" aria-label="Go to available auction properties">
+              <img
+                src={exploreBtn}
+                alt="Explore Auction Properties"
+                className="mt-6 h-11 sm:h-12 w-auto cursor-pointer"
+                loading="lazy"
+                decoding="async"
+              />
+            </Link>
+            </a>
           </div>
         </div>
       </div>
     </section>
 
-    <section className="bg-primary text-primary-foreground py-10 sm:py-12">
+    <section
+      ref={(el) => {
+        statsSectionRef.current = el;
+      }}
+      className="bg-primary text-primary-foreground py-10 sm:py-12"
+    >
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-10 lg:px-[100px]">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-y-6">
-          {[
-            { value: "500+", label: "Auction Properties" },
-            { value: "20+", label: "Partner Banks" },
-            { value: "15+", label: "Cities Covered" },
-            { value: "5000+", label: "Investors" },
-          ].map((stat, index) => (
+          {stats.map((stat, index) => (
             <div
               key={stat.label}
               className={`text-center md:text-left ${index !== 0 ? "md:border-l md:border-white/30 md:pl-10" : ""}`}
             >
-              <p className="text-3xl sm:text-4xl font-semibold">{stat.value}</p>
+              <p className="text-3xl sm:text-4xl font-semibold tabular-nums">
+                {formatCount(counts[index] ?? 0)}+
+              </p>
               <p className="text-sm sm:text-base text-white/90">{stat.label}</p>
             </div>
           ))}
@@ -125,10 +190,17 @@ const AboutContent = () => (
               desc: "Discover valuable real estate deals with competitive reserve prices and strong potential investment returns.",
             },
           ].map((item) => (
-            <div key={item.title} className="flex flex-col items-center gap-4">
+            <div
+              key={item.title}
+              className="flex flex-col items-center gap-4 rounded-2xl p-6 bg-white"
+            >
               <img src={item.icon} alt="" className="w-14 h-14" loading="lazy" decoding="async" />
-              <h3 className="text-lg font-semibold">{item.title}</h3>
-              <p className="text-sm sm:text-[15px] text-foreground/70 leading-[160%]">{item.desc}</p>
+              <h3 className="text-lg font-semibold">
+                {item.title}
+              </h3>
+              <p className="text-sm sm:text-[15px] text-foreground/70 leading-[160%]">
+                {item.desc}
+              </p>
             </div>
           ))}
         </div>
@@ -240,9 +312,10 @@ const AboutContent = () => (
           <div className="rounded-2xl overflow-hidden transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_18px_50px_rgba(15,23,42,0.18)]">
             <img src={investors1} alt="Market growth analytics" className="w-full h-full object-cover" loading="lazy" decoding="async" />
           </div>
-          <div className="rounded-2xl bg-white text-foreground p-6 sm:p-7 shadow-[0_18px_50px_rgba(15,23,42,0.08)] border border-black/5 transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_22px_60px_rgba(15,23,42,0.18)]">
-            <h3 className="text-lg sm:text-xl font-semibold">Verified Property Information</h3>
-            <p className="mt-3 text-sm sm:text-[15px] text-muted-foreground leading-[165%]">
+          <div className="group relative overflow-hidden rounded-2xl bg-white text-foreground p-6 sm:p-7 shadow-[0_18px_50px_rgba(15,23,42,0.08)] border border-black/5 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_22px_60px_rgba(15,23,42,0.18)]">
+            <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-t from-primary to-primary/85" />
+            <h3 className="text-lg sm:text-xl font-semibold relative z-10 transition-colors duration-300 group-hover:text-white">Verified Property Information</h3>
+            <p className="mt-3 text-sm sm:text-[15px] text-muted-foreground leading-[165%] relative z-10 transition-colors duration-300 group-hover:text-white">
               Our platform provides complete property details including legal documents, reserve price, and auction
               schedules, helping investors carefully evaluate each opportunity and make confident decisions before
               participating in property auctions.
@@ -251,9 +324,10 @@ const AboutContent = () => (
           <div className="rounded-2xl overflow-hidden transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_18px_50px_rgba(15,23,42,0.18)]">
             <img src={investors3} alt="City investment insights" className="w-full h-full object-cover" loading="lazy" decoding="async" />
           </div>
-          <div className="rounded-2xl bg-white text-foreground p-6 sm:p-7 shadow-[0_18px_50px_rgba(15,23,42,0.08)] border border-black/5 transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_22px_60px_rgba(15,23,42,0.18)]">
-            <h3 className="text-lg sm:text-xl font-semibold">Better Investment Opportunities</h3>
-            <p className="mt-3 text-sm sm:text-[15px] text-muted-foreground leading-[165%]">
+          <div className="group relative overflow-hidden rounded-2xl bg-white text-foreground p-6 sm:p-7 shadow-[0_18px_50px_rgba(15,23,42,0.08)] border border-black/5 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_22px_60px_rgba(15,23,42,0.18)]">
+            <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-t from-primary to-primary/85" />
+            <h3 className="text-lg sm:text-xl font-semibold relative z-10 transition-colors duration-300 group-hover:text-white">Better Investment Opportunities</h3>
+            <p className="mt-3 text-sm sm:text-[15px] text-muted-foreground leading-[165%] relative z-10 transition-colors duration-300 group-hover:text-white">
               Investors can explore auction properties offered at attractive reserve prices, creating opportunities to
               purchase valuable real estate assets below market value and maximize long-term returns through strategic
               property investments.
@@ -262,9 +336,10 @@ const AboutContent = () => (
           <div className="rounded-2xl overflow-hidden transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_18px_50px_rgba(15,23,42,0.18)]">
             <img src={investors2} alt="Property legal review" className="w-full h-full object-cover" loading="lazy" decoding="async" />
           </div>
-          <div className="rounded-2xl bg-white text-foreground p-6 sm:p-7 shadow-[0_18px_50px_rgba(15,23,42,0.08)] border border-black/5 transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_22px_60px_rgba(15,23,42,0.18)]">
-            <h3 className="text-lg sm:text-xl font-semibold">Smarter Investment Decisions</h3>
-            <p className="mt-3 text-sm sm:text-[15px] text-muted-foreground leading-[165%]">
+          <div className="group relative overflow-hidden rounded-2xl bg-white text-foreground p-6 sm:p-7 shadow-[0_18px_50px_rgba(15,23,42,0.08)] border border-black/5 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_22px_60px_rgba(15,23,42,0.18)]">
+            <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-t from-primary to-primary/85" />
+            <h3 className="text-lg sm:text-xl font-semibold relative z-10 transition-colors duration-300 group-hover:text-white">Smarter Investment Decisions</h3>
+            <p className="mt-3 text-sm sm:text-[15px] text-muted-foreground leading-[165%] relative z-10 transition-colors duration-300 group-hover:text-white">
               By comparing reserve prices with market values and reviewing property details, investors can identify
               profitable opportunities, reduce risks, and make well-informed real estate investment decisions with
               greater confidence.
@@ -275,5 +350,7 @@ const AboutContent = () => (
     </section>
   </>
 );
+
+};
 
 export default AboutContent;

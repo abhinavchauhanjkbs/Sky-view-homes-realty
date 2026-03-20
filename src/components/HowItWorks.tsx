@@ -11,7 +11,7 @@ const steps = [
 ];
 
 const HowItWorks = () => (
-  <section className="bg-primary py-12 sm:py-16 md:py-20">
+  <section id="how-it-works" className="bg-primary py-12 sm:py-16 md:py-20">
     <div className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-10 lg:pl-[70px] lg:pr-[30px] xl:px-[150px]">
       <div className="flex flex-col sm:flex-row items-start justify-between gap-4 mb-8 sm:mb-12">
         <div>
@@ -22,13 +22,15 @@ const HowItWorks = () => (
             Simple step-by-step process to help you participate confidently and secure verified auction properties without complications.
           </p>
         </div>
-        <img
-          src={btnGetGuidance}
-          alt="Get Auction Guidance"
-          className="hidden lg:block h-12 cursor-pointer hover:opacity-90 transition-opacity"
-          loading="lazy"
-          decoding="async"
-        />
+        <a href="/contact#contact-form" aria-label="Go to contact form">
+          <img
+            src={btnGetGuidance}
+            alt="Get Auction Guidance"
+            className="hidden lg:block h-12 cursor-pointer hover:opacity-90 transition-opacity"
+            loading="lazy"
+            decoding="async"
+          />
+        </a>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">

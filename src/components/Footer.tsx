@@ -1,13 +1,25 @@
+import { Link } from "react-router-dom";
 import logoWhite from "@/assets/logo-white.png";
 
-const quickLinks = ["Home", "Auction Properties", "How It Works", "Banks", "Services", "Contact"];
+const quickLinks = [
+  { label: "Home", href: "/" },
+  { label: "Auction Properties", href: "/auction-properties" },
+  { label: "How It Works", href: null },
+  { label: "Banks", href: null },
+  { label: "Services", href: null },
+  { label: "Contact", href: "/contact" },
+];
 const categories = ["Residential Auctions", "Commercial Auctions", "Industrial Properties", "Land & Plots", "Luxury Properties", "Foreclosure Deals"];
 const resources = ["Upcoming Auctions", "Download Auction List", "EMD Process Guide", "Legal Due Diligence", "Investment Tips", "FAQs"];
+
+const scrollToTop = () => {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+};
 
 const Footer = () => (
   <footer className="bg-black text-white">
     <div className="max-w-[1080px] mx-auto px-6 py-16">
-      <div className="grid grid-cols-2 md:grid-cols-[1.2fr_0.8fr_1fr_1fr] gap-8 sm:gap-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[1.2fr_0.8fr_1fr_1fr] gap-8 sm:gap-10">
         {/* Brand */}
         <div>
           <img src={logoWhite} alt="Skyview Homes Reality" className="h-24 mb-4 opacity-70" />
@@ -20,33 +32,61 @@ const Footer = () => (
         <div>
           <h4 className="font-semibold text-lg mb-5">Quick Links</h4>
           <ul className="space-y-3">
-            {quickLinks.map((l) => (
-              <li key={l}>
-                <a href="#" className="text-white/60 hover:text-primary text-sm transition-colors">{l}</a>
+            {quickLinks.map((link) => (
+              <li key={link.label}>
+                {link.href ? (
+                  <Link
+                    to={link.href}
+                    onClick={scrollToTop}
+                    className="text-white/60 hover:text-primary text-sm transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={(event) => event.preventDefault()}
+                    className="text-white/60 text-sm transition-colors cursor-default"
+                  >
+                    {link.label}
+                  </button>
+                )}
               </li>
             ))}
           </ul>
         </div>
 
         {/* Auction Categories */}
-        <div>
+        <div className="text-left">
           <h4 className="font-semibold text-lg mb-5">Auction Categories</h4>
-          <ul className="space-y-3">
+          <ul className="space-y-3 text-left">
             {categories.map((c) => (
               <li key={c}>
-                <a href="#" className="text-white/60 hover:text-primary text-sm transition-colors">{c}</a>
+                <button
+                  type="button"
+                  onClick={(event) => event.preventDefault()}
+                  className="text-white/60 hover:text-primary text-sm transition-colors cursor-default text-left"
+                >
+                  {c}
+                </button>
               </li>
             ))}
           </ul>
         </div>
 
         {/* Investor Resources */}
-        <div>
+        <div className="text-left">
           <h4 className="font-semibold text-lg mb-5">Investor Resources</h4>
-          <ul className="space-y-3">
+          <ul className="space-y-3 text-left">
             {resources.map((r) => (
               <li key={r}>
-                <a href="#" className="text-white/60 hover:text-primary text-sm transition-colors">{r}</a>
+                <button
+                  type="button"
+                  onClick={(event) => event.preventDefault()}
+                  className="text-white/60 hover:text-primary text-sm transition-colors cursor-default text-left"
+                >
+                  {r}
+                </button>
               </li>
             ))}
           </ul>
@@ -66,11 +106,29 @@ const Footer = () => (
           <span className="md:block lg:inline"> Big Brand Bucket</span>
         </p>
         <div className="flex gap-4 md:gap-1 lg:gap-4 text-white/50 text-sm md:justify-self-end md:justify-end">
-          <a href="#" className="hover:text-primary transition-colors">Privacy Policy</a>
+          <button
+            type="button"
+            onClick={(event) => event.preventDefault()}
+            className="hover:text-primary transition-colors cursor-default"
+          >
+            Privacy Policy
+          </button>
           <span className="mx-2 md:mx-0.5 lg:mx-2">|</span>
-          <a href="#" className="hover:text-primary transition-colors">Terms & Conditions</a>
+          <button
+            type="button"
+            onClick={(event) => event.preventDefault()}
+            className="hover:text-primary transition-colors cursor-default"
+          >
+            Terms & Conditions
+          </button>
           <span className="mx-2 md:mx-0.5 lg:mx-2">|</span>
-          <a href="#" className="hover:text-primary transition-colors">Disclaimer</a>
+          <button
+            type="button"
+            onClick={(event) => event.preventDefault()}
+            className="hover:text-primary transition-colors cursor-default"
+          >
+            Disclaimer
+          </button>
         </div>
       </div>
     </div>

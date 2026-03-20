@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import aboutHero from "@/assets/about-hero.png";
 import btnExploreProps from "@/assets/btn-explore-properties.png";
 
@@ -26,11 +27,13 @@ const AboutHeroSection = () => (
         We help investors discover verified bank auction properties with transparent details, secure processes, and
         valuable opportunities across major cities.
       </p>
-      <img
-        src={btnExploreProps}
-        alt="Explore Properties"
-        className="mt-6 sm:mt-8 h-10 sm:h-12 w-auto cursor-pointer hover:opacity-90 transition-opacity"
-      />
+      <Link to="/#live-auctions" replace aria-label="Jump to live auctions">
+        <img
+          src={btnExploreProps}
+          alt="Explore Properties"
+          className="mt-6 sm:mt-8 h-10 sm:h-12 w-auto cursor-pointer hover:opacity-90 transition-opacity"
+        />
+      </Link>
     </div>
   </section>
 );

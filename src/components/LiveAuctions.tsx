@@ -44,7 +44,7 @@ const PropertyCard = ({ p }: { p: typeof properties[0] }) => (
 );
 
 const LiveAuctions = ({ title = "Live Auction Opportunities" }: { title?: string }) => (
-  <section className="py-12 sm:py-16 md:py-20 bg-background">
+  <section id="live-auctions" className="pt-6 sm:pt-8 md:pt-10 pb-12 sm:pb-16 md:pb-20 bg-background">
     {/* remove horizontal padding to align cards to viewport edges */}
     <div className="max-w-[1400px] mx-auto px-0 tablet-live-auctions-container">
         <h2

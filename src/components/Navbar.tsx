@@ -34,7 +34,10 @@ const Navbar = () => {
           <li key={link.label}>
             <Link
               to={link.href}
-              className={`transition-colors text-black text-sm ${
+              onClick={(event) => {
+                if (link.href === "#") event.preventDefault();
+              }}
+              className={`transition-colors text-black text-sm hover:text-primary ${
                 location.pathname === link.href ? "font-bold" : "font-medium"
               }`}
             >
@@ -75,7 +78,7 @@ const Navbar = () => {
               <li key={link.label}>
                 <Link
                   to={link.href}
-                  className={`transition-colors text-black ${
+                  className={`transition-colors text-black hover:text-foreground ${
                     location.pathname === link.href ? "font-bold" : "font-medium"
                   }`}
                 >

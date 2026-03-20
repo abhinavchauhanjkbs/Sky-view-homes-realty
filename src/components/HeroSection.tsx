@@ -23,7 +23,13 @@ const HeroSection = () => (
         <span className="whitespace-nowrap">status, transparent</span> pricing, and expert guidance to
         secure high-value investments confidently.
       </p>
-      <img src={btnViewLive} alt="View Live Auctions" className="mt-6 sm:mt-8 h-10 sm:h-12 cursor-pointer hover:opacity-90 transition-opacity" />
+      <a href="#live-auctions" aria-label="Jump to live auction opportunities">
+        <img
+          src={btnViewLive}
+          alt="View Live Auctions"
+          className="mt-6 sm:mt-8 h-10 sm:h-12 cursor-pointer hover:opacity-90 transition-opacity"
+        />
+      </a>
     </div>
   </section>
 );
