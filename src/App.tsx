@@ -4,11 +4,14 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import { ContactProvider } from "./contexts/ContactContext";
 import Index from "./pages/Index";
 import About from "./pages/About";
 import AuctionProperties from "./pages/AuctionProperties";
 import BrowseAuctionListings from "./pages/BrowseAuctionListings";
 import Contact from "./pages/Contact";
+import AdminWelcome from "./pages/AdminWelcome";
+import AdminDashboard from "./pages/AdminDashboard";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ForgotPassword from "./pages/ForgotPassword";
@@ -32,6 +35,8 @@ const AppRoutes = () => (
     <Route path="/auction-properties" element={<ProtectedRoute><AuctionProperties /></ProtectedRoute>} />
     <Route path="/browse-auction-listings" element={<ProtectedRoute><BrowseAuctionListings /></ProtectedRoute>} />
     <Route path="/contact" element={<ProtectedRoute><Contact /></ProtectedRoute>} />
+    <Route path="/admin" element={<Login />} />
+    <Route path="/admin/dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
     <Route path="*" element={<NotFound />} />
   </Routes>
@@ -39,8 +44,9 @@ const AppRoutes = () => (
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <TooltipProvider>
+    <ContactProvider>
+      <AuthProvider>
+        <TooltipProvider>
         <Toaster />
         <Sonner 
           icons={{
@@ -56,6 +62,7 @@ const App = () => (
         </BrowserRouter>
       </TooltipProvider>
     </AuthProvider>
+    </ContactProvider>
   </QueryClientProvider>
 );
 

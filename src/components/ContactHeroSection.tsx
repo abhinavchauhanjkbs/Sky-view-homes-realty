@@ -31,7 +31,7 @@ const ContactHeroSection = () => (
           className="mt-6 sm:mt-8 h-10 sm:h-12 w-auto cursor-pointer hover:opacity-90 transition-opacity"
           loading="eager"
           decoding="async"
-          fetchpriority="high"
+          fetchPriority="high"
         />
       </a>
     </div>

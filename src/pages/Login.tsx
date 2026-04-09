@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
@@ -14,6 +14,8 @@ const Login = () => {
   const [error, setError] = useState("");
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const isAdminRoute = location.pathname === "/admin";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,7 +23,7 @@ const Login = () => {
 
     const success = await login(email, password);
     if (success) {
-      navigate("/");
+      navigate(isAdminRoute ? "/admin/dashboard" : "/");
     } else {
       setError("Invalid email or password");
     }
@@ -39,7 +41,10 @@ const Login = () => {
         </div>
 
         <div className="relative z-10 w-full h-screen overflow-y-auto p-6 sm:p-8 md:p-10 px-8 sm:px-12 md:px-16 flex flex-col justify-center bg-white rounded-bl-[3rem] md:rounded-l-[3rem] md:ml-0 lg:ml-0 xl:ml-0 md:shadow-xl overflow-x-hidden">
-          <h1 className="text-2xl font-semibold text-center text-foreground mb-6">Login</h1>
+          {isAdminRoute && (
+            <h1 className="text-3xl font-bold text-center text-foreground mb-4">Admin Dashboard</h1>
+          )}
+          <h1 className="text-2xl font-semibold text-center text-foreground mb-6">{isAdminRoute ? "Welcome Back!" : "Login"}</h1>
 
           <form onSubmit={handleSubmit} className="space-y-4 px-6">
             <div>
@@ -76,29 +81,35 @@ const Login = () => {
             <Button type="submit" className="w-full h-10 rounded-full bg-[#63BDE2] hover:bg-[#58b3db] text-white text-sm font-semibold">
               Login
             </Button>
-            <p className="text-center text-xs text-muted-foreground">
-              Do not have an account?{" "}
-              <Link to="/signup" className="text-[#0034AB] font-semibold hover:underline">
-                Sign in
-              </Link>
-            </p>
+            {!isAdminRoute && (
+              <p className="text-center text-xs text-muted-foreground">
+                Do not have an account?{" "}
+                <Link to="/signup" className="text-[#0034AB] font-semibold hover:underline">
+                  Sign in
+                </Link>
+              </p>
+            )}
 
-            <div className="flex items-center gap-3 text-xs text-muted-foreground">
-              <span className="flex-1 h-px bg-border" />
-              OR
-              <span className="flex-1 h-px bg-border" />
-            </div>
+            {!isAdminRoute && (
+              <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                <span className="flex-1 h-px bg-border" />
+                OR
+                <span className="flex-1 h-px bg-border" />
+              </div>
+            )}
 
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 px-6">
-              <button type="button" className="flex items-center justify-center gap-3 h-16 border border-black/10 rounded-md text-sm font-semibold text-foreground hover:bg-muted whitespace-nowrap">
-                <img src={googleIcon} alt="Google" className="w-6 h-6" />
-                Continue with Google
-              </button>
-              <button type="button" className="flex items-center justify-center gap-3 h-16 border border-black/10 rounded-md text-sm font-semibold text-foreground hover:bg-muted">
-                <img src={appleIcon} alt="Apple" className="w-6 h-6" />
-                Continue with Apple
-              </button>
-            </div>
+            {!isAdminRoute && (
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 px-6">
+                <button type="button" className="flex items-center justify-center gap-3 h-16 border border-black/10 rounded-md text-sm font-semibold text-foreground hover:bg-muted whitespace-nowrap">
+                  <img src={googleIcon} alt="Google" className="w-6 h-6" />
+                  Continue with Google
+                </button>
+                <button type="button" className="flex items-center justify-center gap-3 h-16 border border-black/10 rounded-md text-sm font-semibold text-foreground hover:bg-muted">
+                  <img src={appleIcon} alt="Apple" className="w-6 h-6" />
+                  Continue with Apple
+                </button>
+              </div>
+            )}
           </form>
         </div>
       </div>

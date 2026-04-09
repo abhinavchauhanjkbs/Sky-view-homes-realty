@@ -20,7 +20,7 @@ const PropertyGallery = () => {
             className="w-full h-full object-cover transition-transform duration-200 ease-out group-hover:scale-[1.05]"
             loading="eager"
             decoding="async"
-            fetchpriority="high"
+            fetchPriority="high"
           />
           {/* Action buttons */}
           <div className="absolute bottom-4 right-4 flex gap-2">

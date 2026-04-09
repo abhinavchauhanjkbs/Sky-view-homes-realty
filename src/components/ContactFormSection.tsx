@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
+import { useContact } from "@/contexts/ContactContext";
 
 const ContactFormSection = () => {
   const [name, setName] = useState("");
@@ -10,11 +11,31 @@ const ContactFormSection = () => {
   const [phone, setPhone] = useState("");
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
+  const { addSubmission } = useContact();
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    // Simulate sending message
+    if (!name || !email || !phone || !subject || !message) {
+      toast({
+        title: "Error",
+        description: "Please fill in all fields",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Add submission to context
+    console.log('ContactFormSection - submitting:', { fullName: name, email, phone, subject, message });
+    addSubmission({
+      fullName: name,
+      email,
+      phone,
+      subject,
+      message
+    });
+
+    // Show success message
     toast({
       title: "Message sent",
       description: "Thanks for reaching out! We will get back to you shortly.",
