@@ -1,4 +1,4 @@
-import { Activity, BarChart3, ChevronDown, CreditCard, Home, Layers, LogOut, Menu, Plus, Settings, Users, Search, Bell, MessageCircle, TrendingUp, Building, Gavel, UserCheck, IndianRupee, X } from "lucide-react";
+import { Activity, BarChart3, ChevronDown, CreditCard, Home, Layers, LogOut, Menu, Plus, Settings, Users, Search, Bell, MessageCircle, TrendingUp, Building, Gavel, UserCheck, IndianRupee, X, Clock, Calendar, Filter } from "lucide-react";
 import logo from "@/assets/logo.png";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -8,6 +8,14 @@ const AdminDashboard = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("dashboard");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [notificationToggles, setNotificationToggles] = useState({
+    emailOnNewBid: true,
+    newUserRegistration: true,
+    auctionEndAlerts: true,
+    paymentFailures: true,
+    kycFlaggedDocs: true,
+    weeklyRevenueReport: true,
+  });
   const { logout } = useAuth();
   const navigate = useNavigate();
   const dropdownRef = useRef<HTMLDivElement | null>(null);
@@ -55,16 +63,22 @@ const AdminDashboard = () => {
     { x: 96, y: 30, highlight: false },
   ];
   const propertyStats = [
-    { label: "Total Listed", value: "1,284", accent: "bg-emerald-100" },
-    { label: "In Auction", value: "24", accent: "bg-amber-100" },
-    { label: "Pending Approval", value: "37", accent: "bg-orange-100" },
-    { label: "Sold This Month", value: "18", accent: "bg-violet-100" },
+    { label: "Total Listed", value: "1,284", accent: "bg-[#d8f5e6]" },
+    { label: "In Auction", value: "24", accent: "bg-[#fff1c7]" },
+    { label: "Pending Approval", value: "37", accent: "bg-[#ffd9c9]" },
+    { label: "Sold This Month", value: "18", accent: "bg-[#ded9ff]" },
   ];
   const userStats = [
-    { label: "Total Users", value: "18,540", accent: "bg-emerald-100" },
-    { label: "KYC Verified", value: "14,280", accent: "bg-amber-100" },
-    { label: "Pending KYC", value: "3,840", accent: "bg-orange-100" },
-    { label: "Suspended", value: "420", accent: "bg-violet-100" },
+    { label: "Total Users", value: "18,540", accent: "bg-[#d8f5e6]" },
+    { label: "KYC Verified", value: "14,280", accent: "bg-[#fff1c7]" },
+    { label: "Pending KYC", value: "3,840", accent: "bg-[#ffd9c9]" },
+    { label: "Suspended", value: "420", accent: "bg-[#ded9ff]" },
+  ];
+  const paymentStats = [
+    { label: "Total Collected", value: "₹84.2 Cr", accent: "bg-[#d8f5e6]" },
+    { label: "EMDs Held", value: "₹12.4 Cr", accent: "bg-[#fff1c7]" },
+    { label: "Pending Settlements", value: "₹3.7 Cr", accent: "bg-[#ffd9c9]" },
+    { label: "Refunds Issued", value: "₹1.1 Cr", accent: "bg-[#ded9ff]" },
   ];
   const userManagementRows = [
     { user: "Neha Arora", email: "Nehaar78@gmail.com", city: "Mumbai", bids: 14, date: "24 March 2026", kyc: "Verified", kycColor: "text-green-500" },
@@ -76,6 +90,81 @@ const AdminDashboard = () => {
     { user: "Sanjoli Miglani", email: "Neha8@gmail.com", city: "Mumbai", bids: 2, date: "14 March 2024", kyc: "Verified", kycColor: "text-green-500" },
     { user: "Sanjoli Miglani", email: "Neha8@gmail.com", city: "Mumbai", bids: 0, date: "14 March 2024", kyc: "Verified", kycColor: "text-green-500" },
   ];
+  const liveAuctionRows = Array.from({ length: 8 }, (_, index) => ({
+    id: index + 1,
+    property: "Prestige Towers 4B",
+    type: "Residential",
+    city: "Mumbai",
+    area: "1,850 sqft",
+    listedPrice: "₹2.4 Cr",
+    status: "Live",
+    action: "Edit",
+  }));
+  const liveAuctionCards = Array.from({ length: 3 }, (_, index) => ({
+    id: index + 1,
+    property: "Prestige Towers 4B",
+    location: "Mumbai · Ends 4h 22m",
+    status: "Live",
+    currentPrice: "₹2.78 Cr",
+    reserveText: "Reserve: ₹2.4 Cr · 14 bids",
+    progress: 72,
+    minPrice: "₹2.4 Cr",
+    progressLabel: "72% of target",
+    targetPrice: "₹3.4 Cr",
+  }));
+  const bidFeedRows = Array.from({ length: 5 }, (_, index) => ({
+    id: index + 1,
+    user: "Priya Mehta",
+    time: "Just now",
+    amount: "₹2.78 Cr",
+    status: index === 0 ? "Top Bid" : "Out Bid",
+    statusColor: index === 0 ? "text-sky-400" : "text-slate-400",
+  }));
+  const auctionSummary = [
+    { label: "Total bids today", value: "182" },
+    { label: "Unique bidders", value: "62" },
+    { label: "Avg. bid increment", value: "₹3.2 L" },
+    { label: "Highest single bid", value: "₹5.55 Cr" },
+    { label: "Auto-bids active", value: "28" },
+    { label: "Flagged bids", value: "3" },
+  ];
+  const activeAuctionsList = [
+    { name: "Prestige 4B", meta: "14 bids · 4h left" },
+    { name: "DLF Villa 22", meta: "9 bids · 6h left" },
+    { name: "Lodha Suite 7", meta: "21 bids · 11h left" },
+    { name: "Hiranandani 3A", meta: "2 bids · 18h left" },
+  ];
+  const bidVolumeBars = [
+    { label: "8AM", value: 26 },
+    { label: "9AM", value: 44 },
+    { label: "10AM", value: 35 },
+    { label: "11AM", value: 54 },
+    { label: "12AM", value: 42 },
+    { label: "1PM", value: 30 },
+    { label: "2PM", value: 33 },
+    { label: "3PM", value: 46 },
+    { label: "4PM", value: 32 },
+    { label: "5PM", value: 35 },
+    { label: "6PM", value: 35 },
+  ];
+  const paymentRows = [
+    { id: "#TXN-9841", user: "Priya Mehta", type: "EMD", amount: "₹24,000", property: "Prestige Towers 4B", date: "Apr 6, 9:05 AM", status: "Confirmed" },
+    { id: "#TXN-9841", user: "Priya Mehta", type: "Bid Payment", amount: "₹5.55 Cr", property: "Prestige Towers 4B", date: "Apr 6, 9:05 AM", status: "Pending" },
+    { id: "#TXN-9841", user: "Priya Mehta", type: "Refund", amount: "-₹20,000", property: "Prestige Towers 4B", date: "Apr 6, 9:05 AM", status: "Refunded" },
+    { id: "#TXN-9841", user: "Priya Mehta", type: "EMD", amount: "₹5.55 Cr", property: "Prestige Towers 4B", date: "Apr 6, 9:05 AM", status: "Confirmed" },
+    { id: "#TXN-9841", user: "Priya Mehta", type: "EMD", amount: "₹5.55 Cr", property: "Prestige Towers 4B", date: "Apr 6, 9:05 AM", status: "Confirmed" },
+    { id: "#TXN-9841", user: "Priya Mehta", type: "Bid Payment", amount: "₹5.55 Cr", property: "Prestige Towers 4B", date: "Apr 6, 9:05 AM", status: "Confirmed" },
+    { id: "#TXN-9841", user: "Priya Mehta", type: "Bid Payment", amount: "₹5.55 Cr", property: "Prestige Towers 4B", date: "Apr 6, 9:05 AM", status: "Confirmed" },
+    { id: "#TXN-9841", user: "Priya Mehta", type: "Bid Payment", amount: "₹24,000", property: "Prestige Towers 4B", date: "Apr 6, 9:05 AM", status: "Confirmed" },
+  ];
+  const notificationSettings = [
+    { key: "emailOnNewBid", title: "Email on new bid", description: "Notify admin on every bid placed" },
+    { key: "newUserRegistration", title: "New user registration", description: "Daily digest of signups" },
+    { key: "auctionEndAlerts", title: "Auction end alerts", description: "Alert when auction closes" },
+    { key: "paymentFailures", title: "Payment failures", description: "Instant alert on failed txn" },
+    { key: "kycFlaggedDocs", title: "KYC flagged docs", description: "When doc mismatch detected" },
+    { key: "weeklyRevenueReport", title: "Weekly revenue report", description: "Sent every Monday" },
+  ];
   const handleLogout = () => {
     logout();
     navigate("/admin", { replace: true });
@@ -84,6 +173,13 @@ const AdminDashboard = () => {
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
     setIsSidebarOpen(false);
+  };
+
+  const toggleNotification = (key: keyof typeof notificationToggles) => {
+    setNotificationToggles((current) => ({
+      ...current,
+      [key]: !current[key],
+    }));
   };
 
   useEffect(() => {
@@ -131,12 +227,12 @@ const AdminDashboard = () => {
             <div className="space-y-1">
               <button 
                 onClick={() => handleTabChange("dashboard")}
-                className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left shadow-sm transition ${
+                className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left transition ${
                   activeTab === "dashboard" ? "bg-sky-400 text-white hover:bg-sky-500" : "bg-white text-slate-900 hover:bg-slate-50"
                 }`}
               >
                 <Plus className="h-4 w-4" />
-                <span className="text-sm font-medium">Dashboard</span>
+                <span className="text-sm">Dashboard</span>
               </button>
               <button 
                 onClick={() => handleTabChange("auctions")}
@@ -171,19 +267,39 @@ const AdminDashboard = () => {
           <div>
             <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.32em] text-slate-500">Operations</p>
             <div className="space-y-1">
-              <button className="flex w-full items-center gap-2 rounded-lg bg-white px-3 py-2 text-left text-slate-900 transition hover:bg-slate-50">
+              <button
+                onClick={() => handleTabChange("bidding")}
+                className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left transition ${
+                  activeTab === "bidding" ? "bg-sky-400 text-white" : "bg-white text-slate-900 hover:bg-slate-50"
+                }`}
+              >
                 <Layers className="h-4 w-4" />
                 <span className="text-sm">Bidding Management</span>
               </button>
-              <button className="flex w-full items-center gap-2 rounded-lg bg-white px-3 py-2 text-left text-slate-900 transition hover:bg-slate-50">
+              <button
+                onClick={() => handleTabChange("payments")}
+                className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left transition ${
+                  activeTab === "payments" ? "bg-sky-400 text-white" : "bg-white text-slate-900 hover:bg-slate-50"
+                }`}
+              >
                 <CreditCard className="h-4 w-4" />
                 <span className="text-sm">Payments</span>
               </button>
-              <button className="flex w-full items-center gap-2 rounded-lg bg-white px-3 py-2 text-left text-slate-900 transition hover:bg-slate-50">
+              <button
+                onClick={() => handleTabChange("reports")}
+                className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left transition ${
+                  activeTab === "reports" ? "bg-sky-400 text-white" : "bg-white text-slate-900 hover:bg-slate-50"
+                }`}
+              >
                 <BarChart3 className="h-4 w-4" />
                 <span className="text-sm">Reports</span>
               </button>
-              <button className="flex w-full items-center gap-2 rounded-lg bg-white px-3 py-2 text-left text-slate-900 transition hover:bg-slate-50">
+              <button
+                onClick={() => handleTabChange("settings")}
+                className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left transition ${
+                  activeTab === "settings" ? "bg-sky-400 text-white" : "bg-white text-slate-900 hover:bg-slate-50"
+                }`}
+              >
                 <Settings className="h-4 w-4" />
                 <span className="text-sm">Settings</span>
               </button>
@@ -266,7 +382,7 @@ const AdminDashboard = () => {
         <div className={activeTab === "users" ? "p-6 pt-[92px] bg-[#57B6E00D]" : "p-6 pt-[92px]"}>
 
         {/* Dashboard Overview */}
-        <div className={activeTab === "properties" || activeTab === "users" ? "hidden" : "mb-6"}>
+        <div className={activeTab === "properties" || activeTab === "users" || activeTab === "auctions" || activeTab === "bidding" || activeTab === "payments" || activeTab === "settings" || activeTab === "reports" ? "hidden" : "mb-6"}>
           <h1 className="text-2xl font-bold text-slate-900 mb-1">Dashboard Overview</h1>
           <p className="text-sm text-slate-500 mb-4">Monday, 6 April 2026 • Last synced 2 min ago</p>
           
@@ -295,9 +411,7 @@ const AdminDashboard = () => {
                   <p className="text-sm text-slate-500 mb-1">Total Properties</p>
                   <h3 className="text-2xl md:text-3xl font-bold text-slate-900">1,276</h3>
                 </div>
-                <div className="p-2 bg-green-100 rounded-lg">
-                  <Building className="h-5 w-5 text-green-500" />
-                </div>
+                <div className="aspect-square h-12 md:h-[60.75px] rounded-[16px] bg-[#d8f5e6]" />
               </div>
               <div className="flex items-center gap-1 text-green-500 text-sm">
                 <TrendingUp className="h-4 w-4" />
@@ -320,9 +434,7 @@ const AdminDashboard = () => {
                   </p>
                   <h3 className="text-2xl md:text-3xl font-bold text-slate-900">24</h3>
                 </div>
-                <div className="p-2 bg-orange-100 rounded-lg">
-                  <Gavel className="h-5 w-5 text-orange-500" />
-                </div>
+                <div className="aspect-square h-12 md:h-[60.75px] rounded-[16px] bg-[#fff1c7]" />
               </div>
               <div className="flex items-center gap-1 text-green-500 text-sm">
                 <TrendingUp className="h-4 w-4" />
@@ -338,9 +450,7 @@ const AdminDashboard = () => {
                   <p className="text-sm text-slate-500 mb-1">Registered Users</p>
                   <h3 className="text-2xl md:text-3xl font-bold text-slate-900">18,540</h3>
                 </div>
-                <div className="p-2 bg-blue-100 rounded-lg">
-                  <UserCheck className="h-5 w-5 text-blue-500" />
-                </div>
+                <div className="aspect-square h-12 md:h-[60.75px] rounded-[16px] bg-[#ffd9c9]" />
               </div>
               <div className="flex items-center gap-1 text-green-500 text-sm">
                 <TrendingUp className="h-4 w-4" />
@@ -363,9 +473,7 @@ const AdminDashboard = () => {
                   </p>
                   <h3 className="whitespace-nowrap text-2xl md:text-3xl font-bold text-slate-900">₹84.2 Cr</h3>
                 </div>
-                <div className="shrink-0 p-2 bg-purple-100 rounded-lg mr-1 md:mr-0">
-                  <IndianRupee className="h-5 w-5 text-purple-500" />
-                </div>
+                <div className="mr-1 aspect-square h-12 shrink-0 rounded-[16px] bg-[#ded9ff] md:mr-0 md:h-[60.75px]" />
               </div>
               <div className="flex items-center gap-1 text-green-500 text-sm">
                 <TrendingUp className="h-4 w-4" />
@@ -376,7 +484,7 @@ const AdminDashboard = () => {
           </div>
 
         {/* Revenue Analytics Chart */}
-        <div className="bg-white rounded-xl p-4 md:p-6 shadow-sm mb-6">
+        <div className="bg-white rounded-xl p-4 md:p-6 shadow-sm mb-6 mt-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-bold text-slate-900">Revenue Analytics</h2>
             <select className="px-3 py-1 rounded-lg border border-slate-200 text-sm text-slate-600 focus:outline-none focus:ring-2 focus:ring-sky-400">
@@ -465,7 +573,7 @@ const AdminDashboard = () => {
           <div className="min-w-0 bg-white rounded-xl p-6 shadow-sm">
             <h2 className="text-lg font-bold text-slate-900 mb-4">Recent Registrations</h2>
             <div className="overflow-x-auto">
-              <table className="w-full">
+              <table className="min-w-[760px] w-full">
                 <thead>
                   <tr className="text-left text-xs text-slate-500 border-b border-slate-100">
                     <th className="pb-3 font-medium whitespace-nowrap">User</th>
@@ -527,7 +635,7 @@ const AdminDashboard = () => {
                       <p className="mb-2 text-sm text-slate-500">{stat.label}</p>
                       <h3 className="text-2xl md:text-3xl font-bold text-slate-900">{stat.value}</h3>
                     </div>
-                    <div className={`h-8 w-8 rounded-2xl ${stat.accent}`} />
+                    <div className={`aspect-square h-12 md:h-[60.75px] rounded-[16px] ${stat.accent}`} />
                   </div>
                   <div className="flex items-center gap-1 text-sm text-green-500">
                     <TrendingUp className="h-4 w-4" />
@@ -537,7 +645,44 @@ const AdminDashboard = () => {
                 </div>
               ))}
             </div>
-            <div className="min-h-[calc(100vh-300px)] rounded-xl bg-[#f7fbfd]" />
+            <div className="overflow-hidden rounded-[28px] bg-white shadow-sm">
+              <div className="px-8 pb-6 pt-7">
+                <h1
+                  className="text-[24px] font-semibold leading-[120%] tracking-[0px] text-[#201f23]"
+                  style={{ fontFamily: "Poppins, sans-serif" }}
+                >
+                  Property Listings
+                </h1>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="min-w-[900px] border-separate border-spacing-0">
+                  <thead className="bg-[#edf7fd]">
+                    <tr>
+                      <th className="px-8 py-6 text-left text-[15px] font-medium text-[#214b56]">Property</th>
+                      <th className="px-8 py-6 text-left text-[15px] font-medium text-[#214b56]">Type</th>
+                      <th className="px-8 py-6 text-left text-[15px] font-medium text-[#214b56]">City</th>
+                      <th className="px-8 py-6 text-left text-[15px] font-medium text-[#214b56]">Area</th>
+                      <th className="px-8 py-6 text-left text-[15px] font-medium text-[#214b56]">Listed Price</th>
+                      <th className="px-8 py-6 text-left text-[15px] font-medium text-[#214b56]">Status</th>
+                      <th className="px-8 py-6 text-left text-[15px] font-medium text-[#214b56]">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white">
+                    {liveAuctionRows.map((row) => (
+                      <tr key={row.id} className="text-[15px] text-slate-900">
+                        <td className="border-b border-[#d9e3ea] px-8 py-7 whitespace-nowrap">{row.property}</td>
+                        <td className="border-b border-[#d9e3ea] px-8 py-7 whitespace-nowrap">{row.type}</td>
+                        <td className="border-b border-[#d9e3ea] px-8 py-7 whitespace-nowrap">{row.city}</td>
+                        <td className="border-b border-[#d9e3ea] px-8 py-7 whitespace-nowrap">{row.area}</td>
+                        <td className="border-b border-[#d9e3ea] px-8 py-7 whitespace-nowrap">{row.listedPrice}</td>
+                        <td className="border-b border-[#d9e3ea] px-8 py-7 whitespace-nowrap font-medium text-[#2fd474]">{row.status}</td>
+                        <td className="border-b border-[#d9e3ea] px-8 py-7 whitespace-nowrap">{row.action}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         ) : activeTab === "users" ? (
           <div className="min-h-[calc(100vh-88px)] space-y-6">
@@ -549,7 +694,7 @@ const AdminDashboard = () => {
                       <p className="mb-2 text-sm text-slate-500">{stat.label}</p>
                       <h3 className="text-2xl md:text-3xl font-bold text-slate-900">{stat.value}</h3>
                     </div>
-                    <div className={`h-11 w-11 rounded-2xl ${stat.accent}`} />
+                    <div className={`aspect-square h-12 md:h-[60.75px] rounded-[16px] ${stat.accent}`} />
                   </div>
                   <div className="flex items-center gap-1 text-sm text-green-500">
                     <TrendingUp className="h-4 w-4" />
@@ -564,7 +709,7 @@ const AdminDashboard = () => {
                 <h2 className="text-[2rem] font-bold text-slate-900">Recent Registrations</h2>
               </div>
               <div className="overflow-x-auto">
-                <table className="w-full">
+                <table className="min-w-[820px] w-full">
                   <thead className="bg-sky-50/70 text-left text-sm text-slate-500">
                     <tr>
                       <th className="px-6 py-4 font-medium whitespace-nowrap">User</th>
@@ -596,7 +741,452 @@ const AdminDashboard = () => {
             </div>
           </div>
         ) : activeTab === "auctions" ? (
-          <div className="min-h-[calc(100vh-210px)] rounded-xl bg-[#f7fbfd]" />
+          <div className="min-h-[calc(100vh-210px)]">
+            <div className="mb-5">
+              <h1
+                className="text-[24px] font-semibold leading-[120%] tracking-[0px] text-[#201f23]"
+                style={{ fontFamily: "Poppins, sans-serif" }}
+              >
+                Live Auctions
+              </h1>
+              <p
+                className="mt-1 text-[14px] font-normal leading-[150%] tracking-[0.03em] text-[#202224]/70"
+                style={{ fontFamily: "Poppins, sans-serif" }}
+              >
+                4 auctions running now · 8 upcoming
+              </p>
+            </div>
+            <div className="mb-6 grid gap-5 md:grid-cols-3 xl:grid-cols-3">
+              {liveAuctionCards.map((card) => (
+                <div
+                  key={card.id}
+                  className="flex h-[191px] w-full flex-col overflow-hidden rounded-[16px] border border-slate-200 border-l-[2px] border-l-[#57b6e0] bg-white px-6 py-5 shadow-sm md:max-w-none xl:max-w-[361px]"
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="min-w-0">
+                      <h2
+                        className="truncate text-[14px] font-semibold leading-[100%] tracking-[0px] text-[#202224]"
+                        style={{ fontFamily: '"Nunito Sans", sans-serif' }}
+                      >
+                        {card.property}
+                      </h2>
+                      <p className="mt-1 text-[16px] leading-tight text-slate-500">{card.location}</p>
+                    </div>
+                    <span className="mt-1 whitespace-nowrap text-[16px] font-medium text-[#5dd087]">&bull; {card.status}</span>
+                  </div>
+                  <p
+                    className="mt-4 text-[28.32px] font-bold leading-[100%] tracking-[0px] text-[#202224]"
+                    style={{ fontFamily: '"Nunito Sans", sans-serif' }}
+                  >
+                    {card.currentPrice}
+                  </p>
+                  <p className="mt-5 text-[15px] leading-none text-slate-500">{card.reserveText}</p>
+                  <div className="mt-auto">
+                    <div className="mt-1 h-[12px] overflow-hidden rounded-full bg-[#eaebed]">
+                      <div className="h-full rounded-full bg-[#20a848]" style={{ width: `${card.progress}%` }} />
+                    </div>
+                    <div className="mt-3 grid grid-cols-3 items-center text-[14px] leading-tight text-slate-500">
+                      <span>{card.minPrice}</span>
+                      <span className="whitespace-nowrap text-center">{card.progressLabel}</span>
+                      <span className="text-right">{card.targetPrice}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="overflow-hidden rounded-[28px] bg-white shadow-sm">
+              <div className="px-8 pb-6 pt-7">
+                <h1
+                  className="text-[24px] font-semibold leading-[120%] tracking-[0px] text-[#201f23]"
+                  style={{ fontFamily: "Poppins, sans-serif" }}
+                >
+                  All Auctions
+                </h1>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="min-w-[900px] w-full border-separate border-spacing-0">
+                  <thead className="bg-[#edf7fd]">
+                    <tr>
+                      <th className="px-8 py-6 text-left text-[15px] font-medium text-[#214b56]">Property</th>
+                      <th className="px-8 py-6 text-left text-[15px] font-medium text-[#214b56]">Type</th>
+                      <th className="px-8 py-6 text-left text-[15px] font-medium text-[#214b56]">City</th>
+                      <th className="px-8 py-6 text-left text-[15px] font-medium text-[#214b56]">Area</th>
+                      <th className="px-8 py-6 text-left text-[15px] font-medium text-[#214b56]">Listed Price</th>
+                      <th className="px-8 py-6 text-left text-[15px] font-medium text-[#214b56]">Status</th>
+                      <th className="px-8 py-6 text-left text-[15px] font-medium text-[#214b56]">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white">
+                    {liveAuctionRows.map((row) => (
+                      <tr key={row.id} className="text-[15px] text-slate-900">
+                        <td className="border-b border-[#d9e3ea] px-8 py-7 whitespace-nowrap">{row.property}</td>
+                        <td className="border-b border-[#d9e3ea] px-8 py-7 whitespace-nowrap">{row.type}</td>
+                        <td className="border-b border-[#d9e3ea] px-8 py-7 whitespace-nowrap">{row.city}</td>
+                        <td className="border-b border-[#d9e3ea] px-8 py-7 whitespace-nowrap">{row.area}</td>
+                        <td className="border-b border-[#d9e3ea] px-8 py-7 whitespace-nowrap">{row.listedPrice}</td>
+                        <td className="border-b border-[#d9e3ea] px-8 py-7 whitespace-nowrap font-medium text-[#2fd474]">{row.status}</td>
+                        <td className="border-b border-[#d9e3ea] px-8 py-7 whitespace-nowrap">{row.action}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        ) : activeTab === "bidding" ? (
+          <div className="space-y-5">
+            <div>
+              <h1
+                className="text-[24px] font-semibold leading-[120%] tracking-[0px] text-[#201f23]"
+                style={{ fontFamily: "Poppins, sans-serif" }}
+              >
+                Bidding Management
+              </h1>
+              <p
+                className="mt-1 text-[14px] font-normal leading-[150%] tracking-[0.03em] text-[#202224]/70"
+                style={{ fontFamily: "Poppins, sans-serif" }}
+              >
+                Monitor all bids across live auctions in real time
+              </p>
+            </div>
+            <div className="grid gap-4 xl:grid-cols-[1.9fr_0.9fr]">
+              <div className="space-y-4">
+                <div className="rounded-[22px] bg-white shadow-sm">
+                  <div className="flex items-start justify-between border-b border-slate-200 px-5 py-4">
+                    <div>
+                      <h2 className="text-[18px] font-semibold text-[#2a2a2a]">Live Bid Feed</h2>
+                      <p className="mt-1 text-sm text-slate-500">Prestige Towers 4B · Mumbai</p>
+                    </div>
+                    <span className="mt-2 whitespace-nowrap text-sm font-medium text-[#6bd18f]">• Live</span>
+                  </div>
+                  <div className="overflow-x-auto whitespace-nowrap" style={{ touchAction: 'pan-x' }}>
+                    <table className="min-w-[640px] w-full border-separate border-spacing-0 whitespace-nowrap">
+                      <thead className="sr-only">
+                        <tr>
+                          <th>User</th>
+                          <th>Amount</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100">
+                        {bidFeedRows.map((bid) => (
+                          <tr key={bid.id}>
+                            <td className="px-4 py-4">
+                              <div className="flex items-center gap-3 min-w-[175px]">
+                                <div className="h-8 w-8 rounded-full bg-sky-400" />
+                                <div className="min-w-0">
+                                  <p className="text-sm font-semibold text-slate-800">{bid.user}</p>
+                                  <p className="text-xs text-slate-500">{bid.time}</p>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-4 py-4 text-center whitespace-nowrap text-sm font-semibold text-slate-700">{bid.amount}</td>
+                            <td className={`px-4 py-4 text-right whitespace-nowrap text-sm font-semibold ${bid.statusColor}`}>{bid.status}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <p className="mt-2 text-xs text-slate-400">Swipe left to view the full row on mobile</p>
+                </div>
+                <div className="rounded-[22px] bg-white shadow-sm">
+                  <div className="border-b border-slate-200 px-5 py-4">
+                    <h2 className="text-[18px] font-semibold text-[#2a2a2a]">Bid Volume Today</h2>
+                  </div>
+                  <div className="overflow-x-auto px-5 pb-6 pt-8" style={{ touchAction: 'pan-x' }}>
+                    <div className="relative h-[180px] w-[560px] min-w-[560px]">
+                      <div className="absolute inset-0 flex flex-col justify-between text-xs text-slate-400">
+                        {[60, 50, 40, 30, 20, 10, 0].map((tick) => (
+                          <div key={tick} className="relative">
+                            <span className="absolute -left-1 -translate-x-full text-slate-500">{tick}</span>
+                            <div className="border-t border-slate-100" />
+                          </div>
+                        ))}
+                      </div>
+                      <div className="absolute bottom-0 left-8 right-0 flex h-[150px] items-end justify-between gap-3">
+                        {bidVolumeBars.map((bar) => (
+                          <div key={bar.label} className="flex flex-1 flex-col items-center justify-end gap-2">
+                            <div
+                              className="w-full max-w-[22px] rounded-t-[6px] bg-sky-400"
+                              style={{ height: `${bar.value * 2.2}px` }}
+                            />
+                            <span className="text-[10px] text-slate-500">{bar.label}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="space-y-4">
+                <div className="overflow-hidden rounded-[22px] bg-white shadow-sm">
+                  <div className="border-b border-slate-200 px-5 py-4">
+                    <h2 className="text-[18px] font-semibold text-[#2a2a2a]">Auction Summary</h2>
+                  </div>
+                  <div className="space-y-3 px-5 py-4">
+                    {auctionSummary.map((item) => (
+                      <div key={item.label} className="flex items-center justify-between gap-4 text-sm">
+                        <span className="text-slate-500">{item.label}</span>
+                        <span className="font-semibold text-slate-700">{item.value}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="overflow-hidden rounded-[22px] bg-white shadow-sm">
+                  <div className="border-b border-slate-200 px-5 py-4">
+                    <h2 className="text-[18px] font-semibold text-[#2a2a2a]">Active Auctions</h2>
+                  </div>
+                  <div className="space-y-4 px-5 py-4">
+                    {activeAuctionsList.map((auction) => (
+                      <div key={auction.name} className="flex items-start justify-between gap-4">
+                        <div>
+                          <p className="text-[16px] font-semibold text-slate-700">{auction.name}</p>
+                          <p className="mt-1 text-sm text-slate-500">{auction.meta}</p>
+                        </div>
+                        <span className="mt-1 whitespace-nowrap text-sm font-medium text-[#6bd18f]">• Live</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : activeTab === "payments" ? (
+          <div className="space-y-5">
+            <div>
+              <h1
+                className="text-[24px] font-semibold leading-[120%] tracking-[0px] text-[#201f23]"
+                style={{ fontFamily: "Poppins, sans-serif" }}
+              >
+                Payments
+              </h1>
+              <p
+                className="mt-1 text-[14px] font-normal leading-[150%] tracking-[0.03em] text-[#202224]/70"
+                style={{ fontFamily: "Poppins, sans-serif" }}
+              >
+                All transactions, EMDs, and settlements
+              </p>
+            </div>
+            <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
+              {paymentStats.map((stat) => (
+                <div key={stat.label} className="rounded-[22px] bg-white p-4 shadow-sm md:p-5">
+                  <div className="mb-4 flex items-start justify-between gap-3">
+                    <div>
+                      <p className="mb-2 text-sm text-slate-500">{stat.label}</p>
+                      <h3 className="text-[24px] font-bold text-slate-900 md:text-[26px]">{stat.value}</h3>
+                    </div>
+                    <div className={`aspect-square h-12 md:h-[60.75px] rounded-[16px] ${stat.accent}`} />
+                  </div>
+                  <div className="flex items-center gap-1 text-sm text-green-500">
+                    <TrendingUp className="h-4 w-4" />
+                    <span>8.5%</span>
+                    <span className="text-slate-400">Up from yesterday</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="rounded-[28px] bg-white shadow-sm">
+              <div className="flex items-center justify-between px-5 py-5 md:px-6">
+                <h2 className="text-[18px] font-semibold text-[#2a2a2a] md:text-[20px]">Transaction History</h2>
+                <button className="text-sm font-medium text-sky-400 hover:text-sky-500">Export CSV</button>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="min-w-[980px] border-separate border-spacing-0">
+                  <thead className="bg-[#edf7fd]">
+                    <tr>
+                      <th className="px-6 py-4 text-left text-sm font-medium text-[#214b56]">Txn ID</th>
+                      <th className="px-6 py-4 text-left text-sm font-medium text-[#214b56]">Users</th>
+                      <th className="px-6 py-4 text-left text-sm font-medium text-[#214b56]">Type</th>
+                      <th className="px-6 py-4 text-left text-sm font-medium text-[#214b56]">Amount</th>
+                      <th className="px-6 py-4 text-left text-sm font-medium text-[#214b56]">Property</th>
+                      <th className="px-6 py-4 text-left text-sm font-medium text-[#214b56]">Date</th>
+                      <th className="px-6 py-4 text-left text-sm font-medium text-[#214b56]">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white">
+                    {paymentRows.map((row, index) => (
+                      <tr key={`${row.id}-${index}`} className="text-[15px] text-slate-900">
+                        <td className="border-b border-[#d9e3ea] px-6 py-5 whitespace-nowrap">{row.id}</td>
+                        <td className="border-b border-[#d9e3ea] px-6 py-5 whitespace-nowrap">{row.user}</td>
+                        <td className="border-b border-[#d9e3ea] px-6 py-5 whitespace-nowrap">{row.type}</td>
+                        <td className="border-b border-[#d9e3ea] px-6 py-5 whitespace-nowrap">{row.amount}</td>
+                        <td className="border-b border-[#d9e3ea] px-6 py-5 whitespace-nowrap">{row.property}</td>
+                        <td className="border-b border-[#d9e3ea] px-6 py-5 whitespace-nowrap">{row.date}</td>
+                        <td className="border-b border-[#d9e3ea] px-6 py-5 whitespace-nowrap">{row.status}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        ) : activeTab === "settings" ? (
+          <div className="space-y-5">
+            <div>
+              <h1
+                className="text-[24px] font-semibold leading-[120%] tracking-[0px] text-[#201f23]"
+                style={{ fontFamily: "Poppins, sans-serif" }}
+              >
+                Settings
+              </h1>
+              <p
+                className="mt-1 text-[14px] font-normal leading-[150%] tracking-[0.03em] text-[#202224]/70"
+                style={{ fontFamily: "Poppins, sans-serif" }}
+              >
+                Platform configuration and preferences
+              </p>
+            </div>
+            <div className="grid gap-4 xl:grid-cols-[1.9fr_0.95fr]">
+              <div className="space-y-4">
+                <div className="rounded-[22px] bg-white shadow-sm">
+                  <div className="border-b border-slate-200 px-5 py-4">
+                    <h2 className="text-[18px] font-semibold text-[#2a2a2a]">Platform Settings</h2>
+                  </div>
+                  <div className="space-y-4 px-5 py-4">
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <label className="block">
+                        <span className="mb-2 block text-sm font-semibold text-slate-700">Platform Name</span>
+                        <input value="" readOnly className="h-12 w-full rounded-xl border border-slate-200 px-4 text-sm text-slate-700 outline-none" />
+                      </label>
+                      <label className="block">
+                        <span className="mb-2 block text-sm font-semibold text-slate-700">Support Email</span>
+                        <input value="" readOnly className="h-12 w-full rounded-xl border border-slate-200 px-4 text-sm text-slate-700 outline-none" />
+                      </label>
+                      <label className="block">
+                        <span className="mb-2 block text-sm font-semibold text-slate-700">Default Currency</span>
+                        <input value="" readOnly className="h-12 w-full rounded-xl border border-slate-200 px-4 text-sm text-slate-700 outline-none" />
+                      </label>
+                      <label className="block">
+                        <span className="mb-2 block text-sm font-semibold text-slate-700">Time Zone</span>
+                        <input value="" readOnly className="h-12 w-full rounded-xl border border-slate-200 px-4 text-sm text-slate-700 outline-none" />
+                      </label>
+                    </div>
+                    <label className="block">
+                      <span className="mb-2 block text-sm font-semibold text-slate-700">Platform Description</span>
+                      <textarea
+                        value=""
+                        readOnly
+                        className="min-h-[100px] w-full rounded-xl border border-slate-200 px-4 py-3 text-sm text-slate-700 outline-none"
+                      />
+                    </label>
+                    <div className="flex justify-end gap-3">
+                      <button className="rounded-xl border border-slate-300 px-7 py-3 text-sm font-semibold text-slate-500">Cancel</button>
+                      <button className="rounded-xl bg-sky-400 px-7 py-3 text-sm font-semibold text-white">Save Changes</button>
+                    </div>
+                  </div>
+                </div>
+                <div className="rounded-[22px] bg-white shadow-sm">
+                  <div className="border-b border-slate-200 px-5 py-4">
+                    <h2 className="text-[18px] font-semibold text-[#2a2a2a]">Auction Rules</h2>
+                  </div>
+                  <div className="space-y-4 px-5 py-4">
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <label className="block">
+                        <span className="mb-2 block text-sm font-semibold text-slate-700">Min. EMD Amount (₹)</span>
+                        <input value="" readOnly className="h-12 w-full rounded-xl border border-slate-200 px-4 text-sm text-slate-700 outline-none" />
+                      </label>
+                      <label className="block">
+                        <span className="mb-2 block text-sm font-semibold text-slate-700">Bid Increment (₹)</span>
+                        <input value="" readOnly className="h-12 w-full rounded-xl border border-slate-200 px-4 text-sm text-slate-700 outline-none" />
+                      </label>
+                      <label className="block">
+                        <span className="mb-2 block text-sm font-semibold text-slate-700">Auction Duration (hrs)</span>
+                        <input value="" readOnly className="h-12 w-full rounded-xl border border-slate-200 px-4 text-sm text-slate-700 outline-none" />
+                      </label>
+                      <label className="block">
+                        <span className="mb-2 block text-sm font-semibold text-slate-700">Extension Time (min)</span>
+                        <input value="" readOnly className="h-12 w-full rounded-xl border border-slate-200 px-4 text-sm text-slate-700 outline-none" />
+                      </label>
+                    </div>
+                    <div className="flex justify-end gap-3">
+                      <button className="rounded-xl border border-slate-300 px-7 py-3 text-sm font-semibold text-slate-500">Cancel</button>
+                      <button className="rounded-xl bg-sky-400 px-7 py-3 text-sm font-semibold text-white">Save Rules</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="space-y-4">
+                <div className="rounded-[22px] bg-white shadow-sm">
+                  <div className="border-b border-slate-200 px-5 py-4">
+                    <h2 className="text-[18px] font-semibold text-[#2a2a2a]">Notifications</h2>
+                  </div>
+                  <div className="space-y-4 px-5 py-4">
+                    {notificationSettings.map((item) => (
+                      <div key={item.title} className="flex items-start justify-between gap-3">
+                        <div>
+                          <p className="text-[15px] font-semibold text-slate-700">{item.title}</p>
+                          <p className="mt-1 text-sm text-slate-400">{item.description}</p>
+                        </div>
+                        <button
+                          type="button"
+                          aria-pressed={notificationToggles[item.key as keyof typeof notificationToggles]}
+                          onClick={() => toggleNotification(item.key as keyof typeof notificationToggles)}
+                          className={`mt-1 h-6 w-10 rounded-full p-[2px] transition ${
+                            notificationToggles[item.key as keyof typeof notificationToggles] ? "bg-sky-400" : "bg-slate-300"
+                          }`}
+                        >
+                          <span
+                            className={`block h-5 w-5 rounded-full bg-white transition-transform ${
+                              notificationToggles[item.key as keyof typeof notificationToggles] ? "translate-x-4" : "translate-x-0"
+                            }`}
+                          />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="rounded-[22px] bg-white shadow-sm">
+                  <div className="border-b border-slate-200 px-5 py-4">
+                    <h2 className="text-[18px] font-semibold text-[#2a2a2a]">Admin Profile</h2>
+                  </div>
+                  <div className="space-y-4 px-5 py-4">
+                    <div className="flex items-center gap-4">
+                      <div className="h-12 w-12 rounded-full bg-sky-400" />
+                      <div>
+                        <p className="text-[16px] font-semibold text-slate-700">Arjun Kapoor</p>
+                        <p className="text-sm text-slate-400">Super Admin · arjun@estateauct.in</p>
+                      </div>
+                    </div>
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <label className="block">
+                        <span className="mb-2 block text-sm font-semibold text-slate-700">First Name</span>
+                        <input value="" readOnly className="h-12 w-full rounded-xl border border-slate-200 px-4 text-sm text-slate-700 outline-none" />
+                      </label>
+                      <label className="block">
+                        <span className="mb-2 block text-sm font-semibold text-slate-700">Last Name</span>
+                        <input value="" readOnly className="h-12 w-full rounded-xl border border-slate-200 px-4 text-sm text-slate-700 outline-none" />
+                      </label>
+                    </div>
+                    <label className="block">
+                      <span className="mb-2 block text-sm font-semibold text-slate-700">Email</span>
+                      <input value="" readOnly className="h-12 w-full rounded-xl border border-slate-200 px-4 text-sm text-slate-700 outline-none" />
+                    </label>
+                    <div className="flex justify-end gap-3">
+                      <button className="rounded-xl border border-slate-300 px-7 py-3 text-sm font-semibold text-slate-500">Cancel</button>
+                      <button className="rounded-xl bg-sky-400 px-7 py-3 text-sm font-semibold text-white">Update Profile</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : activeTab === "reports" ? (
+          <div className="min-h-[calc(100vh-210px)]">
+            <div>
+              <h1
+                className="text-[24px] font-semibold leading-[120%] tracking-[0px] text-[#201f23]"
+                style={{ fontFamily: "Poppins, sans-serif" }}
+              >
+                Reports
+              </h1>
+              <p
+                className="mt-1 text-[14px] font-normal leading-[150%] tracking-[0.03em] text-[#202224]/70"
+                style={{ fontFamily: "Poppins, sans-serif" }}
+              >
+                Download and schedule platform analytics
+              </p>
+            </div>
+          </div>
         ) : null}
       </div>
     </div>

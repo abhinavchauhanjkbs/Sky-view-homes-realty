@@ -40,3 +40,172 @@
 .read-the-docs {
   color: #888;
 }
+
+/* ===== MOBILE HORIZONTAL SCROLL CONFIGURATION ===== */
+
+/* Base overflow-x-auto styling - universal */
+.overflow-x-auto {
+  display: block;
+  width: 100%;
+  -webkit-overflow-scrolling: touch;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+}
+
+..horizontal-scroll-table {
+  position: relative;
+  overflow-x: scroll !important;
+  overflow-y: hidden !important;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-color: rgb(56, 189, 248) rgb(241, 245, 249);
+  scrollbar-gutter: stable both-edges;
+  padding-bottom: 0.75rem;
+}
+
+.horizontal-scroll-table::after {
+  content: '';
+  position: absolute;
+  left: 0.5rem;
+  right: 0.5rem;
+  bottom: 0.5rem;
+  height: 4px;
+  background: rgba(148, 163, 184, 0.2);
+  border-radius: 9999px;
+  pointer-events: none;
+}
+
+.horizontal-scroll-table::-webkit-scrollbar {
+  height: 10px;
+}
+
+.horizontal-scroll-table::-webkit-scrollbar-track {
+  background: rgb(241, 245, 249);
+}
+
+.horizontal-scroll-table::-webkit-scrollbar-thumb {
+  background: rgb(56, 189, 248);
+  border-radius: 9999px;
+}
+
+.horizontal-scroll-table::-webkit-scrollbar-thumb:hover {
+  background: rgb(14, 165, 233);
+}
+
+@media (max-width: 1024px) {
+  /* Tablet & Mobile - Show scrollbars */
+  .overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
+    overflow-x: scroll !important;
+    overflow-y: visible !important;
+    scrollbar-width: auto;
+  }
+
+  .overflow-x-auto::-webkit-scrollbar {
+    height: 10px;
+    width: 10px;
+  }
+
+  .overflow-x-auto::-webkit-scrollbar-track {
+    background: rgba(241, 245, 249, 0.8);
+  }
+
+  .overflow-x-auto::-webkit-scrollbar-thumb {
+    background: rgb(56, 189, 248);
+    border-radius: 5px;
+  }
+
+  .overflow-x-auto::-webkit-scrollbar-thumb:active {
+    background: rgb(14, 165, 233);
+  }
+}
+
+@media (max-width: 768px) {
+  /* Mobile devices - Aggressive scrolling */
+  .overflow-x-auto {
+    -webkit-overflow-scrolling: touch !important;
+    overflow-x: scroll !important;
+    overflow-y: auto !important;
+    scroll-behavior: smooth;
+    touch-action: pan-x;
+    -ms-touch-action: pan-x;
+    display: block;
+    width: 100%;
+  }
+
+  /* Ensure children don't overflow parent width */
+  .overflow-x-auto > * {
+    display: block;
+    overflow: visible;
+  }
+
+  .overflow-x-auto table {
+    display: table;
+    width: max-content;
+    min-width: 100%;
+    white-space: nowrap;
+  }
+
+  .overflow-x-auto th,
+  .overflow-x-auto td {
+    white-space: nowrap;
+  }
+
+  .overflow-x-auto > * {
+    min-width: max-content;
+  }
+
+  .overflow-x-auto div {
+    max-width: 100vw;
+  }
+
+  /* Mobile scrollbar visible and easy to use */
+  .overflow-x-auto {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(56, 189, 248) rgb(241, 245, 249);
+  }
+
+  .overflow-x-auto::-webkit-scrollbar {
+    height: 12px;
+  }
+
+  .overflow-x-auto::-webkit-scrollbar-track {
+    background: rgb(241, 245, 249);
+  }
+
+  .overflow-x-auto::-webkit-scrollbar-thumb {
+    background: rgb(56, 189, 248);
+    border-radius: 6px;
+    min-height: 40px;
+  }
+
+  .overflow-x-auto::-webkit-scrollbar-thumb:hover,
+  .overflow-x-auto::-webkit-scrollbar-thumb:active {
+    background: rgb(14, 165, 233);
+  }
+}
+
+@media (min-width: 769px) {
+  /* Desktop - Hide scrollbars for clean look */
+  .overflow-x-auto {
+    scrollbar-width: none;
+  }
+
+  .overflow-x-auto::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Global scrollbar defaults */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(56, 189, 248);
+  border-radius: 4px;
+}
